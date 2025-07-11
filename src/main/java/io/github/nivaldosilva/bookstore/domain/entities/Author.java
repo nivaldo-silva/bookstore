@@ -1,5 +1,6 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -31,37 +32,39 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"books"})
-@ToString(exclude = {"books"})
-public class Author {
-    
+@EqualsAndHashCode(exclude = { "books" })
+@ToString(exclude = { "books" })
+public class Author implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @Column(nullable = false, length = 100)
     @NotBlank
     private String name;
-    
+
     @Column(nullable = false, length = 100)
     @NotBlank
     private String nationality;
-    
+
     @Column(name = "birth_date", nullable = false)
     @NotNull
     @Past
     private LocalDate birthDate;
-    
+
     @Column(name = "biography", nullable = false, columnDefinition = "TEXT")
     @NotBlank
     private String biography;
-    
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Book> books;
-    
+
     @CreationTimestamp
     private Instant creationTimestamp;
-    
+
     @UpdateTimestamp
     private Instant updateTimestamp;
 }

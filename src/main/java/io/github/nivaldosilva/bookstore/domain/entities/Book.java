@@ -1,5 +1,6 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -38,56 +39,58 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"author", "orderItems"})
-@ToString(exclude = {"author", "orderItems"})
-public class Book {
-    
+@EqualsAndHashCode(exclude = { "author", "orderItems" })
+@ToString(exclude = { "author", "orderItems" })
+public class Book implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @Column(nullable = false, unique = true, length = 17)
     @ISBN
     private String isbn;
-    
+
     @Column(nullable = false, length = 200)
     @NotBlank
     private String title;
-    
+
     @Column(nullable = false, columnDefinition = "TEXT")
     @NotBlank
     private String synopsis;
-    
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
     private Genre genre;
-    
+
     @Column(name = "publication_date", nullable = false)
     @NotNull
     @Past
     private LocalDate publicationDate;
-    
+
     @Column(nullable = false, precision = 10, scale = 2)
     @NotNull
     private BigDecimal price;
-    
+
     @Column(name = "stock_quantity", nullable = false)
     @NotNull
     @PositiveOrZero
     private Integer stockQuantity;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     @NotNull
     private Author author;
-    
+
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
-    
+
     @CreationTimestamp
     private Instant creationTimestamp;
-    
+
     @UpdateTimestamp
     private Instant updateTimestamp;
 }

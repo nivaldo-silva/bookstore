@@ -1,5 +1,6 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -34,34 +35,36 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"customer", "items"})
-@ToString(exclude = {"customer", "items"})
-public class Order {
-    
+@EqualsAndHashCode(exclude = { "customer", "items" })
+@ToString(exclude = { "customer", "items" })
+public class Order implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @NotNull
     private User customer;
-    
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderItem> items;
-    
+
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     @NotNull
     private BigDecimal totalAmount;
-    
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus status;
-    
+
     @CreationTimestamp
     private Instant creationTimestamp;
-    
+
     @UpdateTimestamp
     private Instant updateTimestamp;
 }

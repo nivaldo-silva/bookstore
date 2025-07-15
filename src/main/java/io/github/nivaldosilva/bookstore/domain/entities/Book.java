@@ -81,7 +81,7 @@ public class Book implements Serializable {
     private Integer stockQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_fk", nullable = false)
     @NotNull
     private Author author;
 
@@ -89,8 +89,12 @@ public class Book implements Serializable {
     private List<OrderItem> orderItems;
 
     @CreationTimestamp
-    private Instant creationTimestamp;
+    @Column(name = "creation_timestamp", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant creationTimestamp = Instant.now();
 
     @UpdateTimestamp
-    private Instant updateTimestamp;
+    @Column(name = "update_timestamp", nullable = false)
+    @Builder.Default
+    private Instant updateTimestamp = Instant.now();
 }

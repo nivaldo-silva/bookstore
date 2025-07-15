@@ -5,24 +5,25 @@ import lombok.Getter;
 @Getter
 public enum Genre {
 
-    ADVENTURE("Adventure"),
-    DRAMA("Drama"),
-    COMEDY("Comedy"),
-    FICTION("Fiction"),
-    NON_FICTION("Non-Fiction"),
-    MYSTERY("Mystery"),
-    FANTASY("Fantasy"),
-    SCIENCE_FICTION("Science Fiction"),
-    BIOGRAPHY("Biography"),
-    HISTORY("History"),
-    ROMANCE("Romance"),
-    HORROR("Horror"),
-    SELF_HELP("Self-Help");
-
-    private final String genre;
-
-    Genre(String genre) {
-        this.genre = genre;
-    }
+    FICTION,
+    NON_FICTION,
+    SCIENCE_FICTION,
+    FANTASY,
+    MYSTERY,
+    THRILLER,
+    ROMANCE,
+    HORROR,
+    BIOGRAPHY,
+    HISTORY,
+    POETRY,
+    CHILDRENS,
+    YOUNG_ADULT,
+    SELF_HELP,
+    COOKBOOK,
+    ART,
+    TECHNOLOGY,
+    HEALTH,
+    TRAVEL,
+    BUSINESS
 
 }

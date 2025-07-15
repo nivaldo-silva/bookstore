@@ -41,12 +41,12 @@ public class OrderItem implements Serializable {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_fk", nullable = false)
     @NotNull
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_fk", nullable = false)
     @NotNull
     private Book book;
 
@@ -66,8 +66,12 @@ public class OrderItem implements Serializable {
     private BigDecimal totalPrice;
 
     @CreationTimestamp
-    private Instant creationTimestamp;
+    @Column(name = "creation_timestamp", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant creationTimestamp = Instant.now();
 
     @UpdateTimestamp
-    private Instant updateTimestamp;
+    @Column(name = "update_timestamp", nullable = false)
+    @Builder.Default
+    private Instant updateTimestamp = Instant.now();
 }

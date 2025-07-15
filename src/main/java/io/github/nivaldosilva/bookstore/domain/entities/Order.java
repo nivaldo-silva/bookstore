@@ -35,8 +35,8 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "customer", "items" })
-@ToString(exclude = { "customer", "items" })
+@EqualsAndHashCode(exclude = { "client", "items" })
+@ToString(exclude = { "client", "items" })
 public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,9 +46,9 @@ public class Order implements Serializable {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "client_fk", nullable = false)
     @NotNull
-    private User customer;
+    private Client client;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderItem> items;
@@ -63,8 +63,12 @@ public class Order implements Serializable {
     private OrderStatus status;
 
     @CreationTimestamp
-    private Instant creationTimestamp;
+    @Column(name = "creation_timestamp", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant creationTimestamp = Instant.now();
 
     @UpdateTimestamp
-    private Instant updateTimestamp;
+    @Column(name = "update_timestamp", nullable = false)
+    @Builder.Default
+    private Instant updateTimestamp = Instant.now();
 }

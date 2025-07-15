@@ -63,8 +63,12 @@ public class Author implements Serializable {
     private List<Book> books;
 
     @CreationTimestamp
-    private Instant creationTimestamp;
+    @Column(name = "creation_timestamp", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant creationTimestamp = Instant.now();
 
     @UpdateTimestamp
-    private Instant updateTimestamp;
+    @Column(name = "update_timestamp", nullable = false)
+    @Builder.Default
+    private Instant updateTimestamp = Instant.now();
 }

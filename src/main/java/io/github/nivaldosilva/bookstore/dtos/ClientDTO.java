@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -15,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class ClientDTO {
 
     private UUID id;
 
@@ -31,4 +32,5 @@ public class UserDTO {
     @NotBlank(message = "Password cannot be empty")
     private String password;
 
+    private List<BookDTO> purchasedBooks;
 }

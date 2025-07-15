@@ -10,11 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthorDTO {
 
     private UUID id;
@@ -33,5 +35,6 @@ public class AuthorDTO {
 
     @NotBlank(message = "Biography cannot be empty")
     private String biography;
+    
 
 }

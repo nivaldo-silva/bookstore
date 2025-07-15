@@ -33,6 +33,7 @@ public class BookMapper {
                 .price(book.getPrice())
                 .stockQuantity(book.getStockQuantity())
                 .authorId(book.getAuthor() != null ? book.getAuthor().getId() : null)
+                .authorName(book.getAuthor() != null ? book.getAuthor().getName() : null)
                 .build();
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,14 +25,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "users")
+@Table(name = "clients")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "orders" })
 @ToString(exclude = { "orders" })
-public class User implements Serializable {
+public class Client implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,12 +53,17 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @CreationTimestamp
-    private Instant creationTimestamp;
+    @Column(name = "creation_timestamp", nullable = false, updatable = false)
+    @Builder.Default
+    private Instant creationTimestamp = Instant.now();
 
     @UpdateTimestamp
-    private Instant updateTimestamp;
+    @Column(name = "update_timestamp", nullable = false)
+    @Builder.Default
+    private Instant updateTimestamp = Instant.now();
+
 }

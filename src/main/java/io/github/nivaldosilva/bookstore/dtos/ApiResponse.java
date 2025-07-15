@@ -1,7 +1,6 @@
 package io.github.nivaldosilva.bookstore.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PasswordUpdateDTO {
+public class ApiResponse<T> {
 
-    @NotBlank(message = "New password cannot be empty")
-    private String newPassword;
+    private String message;
+    private T data;
 
 }

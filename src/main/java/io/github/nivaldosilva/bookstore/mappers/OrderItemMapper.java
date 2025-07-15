@@ -3,13 +3,13 @@ package io.github.nivaldosilva.bookstore.mappers;
 import io.github.nivaldosilva.bookstore.domain.entities.Book;
 import io.github.nivaldosilva.bookstore.domain.entities.Order;
 import io.github.nivaldosilva.bookstore.domain.entities.OrderItem;
-import io.github.nivaldosilva.bookstore.dtos.OrderItemDTO;
+import io.github.nivaldosilva.bookstore.dtos.OrderItemResponseDTO;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class OrderItemMapper {
 
-    public static OrderItem toEntity(OrderItemDTO orderItemDTO, Order order, Book book) {
+    public static OrderItem toEntity(OrderItemResponseDTO orderItemDTO, Order order, Book book) {
         return OrderItem.builder()
                 .id(orderItemDTO.getId())
                 .order(order)
@@ -20,15 +20,18 @@ public class OrderItemMapper {
                 .build();
     }
 
-    public static OrderItemDTO toDTO(OrderItem orderItem) {
-        return OrderItemDTO.builder()
+    public static OrderItemResponseDTO toDTO(OrderItem orderItem) {
+        return OrderItemResponseDTO.builder()
                 .id(orderItem.getId())
-                .orderId(orderItem.getOrder() != null ? orderItem.getOrder().getId() : null)
                 .bookId(orderItem.getBook() != null ? orderItem.getBook().getId() : null)
+                .bookIsbn(orderItem.getBook() != null ? orderItem.getBook().getIsbn() : null)
+                .bookTitle(orderItem.getBook() != null ? orderItem.getBook().getTitle() : null)
+                .bookAuthorName(orderItem.getBook() != null && orderItem.getBook().getAuthor() != null
+                        ? orderItem.getBook().getAuthor().getName()
+                        : null)
                 .quantity(orderItem.getQuantity())
                 .unitPrice(orderItem.getUnitPrice())
                 .totalPrice(orderItem.getTotalPrice())
                 .build();
     }
-
 }

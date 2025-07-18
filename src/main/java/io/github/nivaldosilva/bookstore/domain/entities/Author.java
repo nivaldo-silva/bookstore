@@ -1,8 +1,7 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
-import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,59 +15,46 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "authors")
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "books" })
-@ToString(exclude = { "books" })
-public class Author implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(nullable = false, length = 100)
-    @NotBlank
     private String name;
 
     @Column(nullable = false, length = 100)
-    @NotBlank
     private String nationality;
 
     @Column(name = "birth_date", nullable = false)
-    @NotNull
-    @Past
     private LocalDate birthDate;
 
-    @Column(name = "biography", nullable = false, columnDefinition = "TEXT")
-    @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Book> books;
 
     @CreationTimestamp
-    @Column(name = "creation_timestamp", nullable = false, updatable = false)
-    @Builder.Default
-    private Instant creationTimestamp = Instant.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_timestamp", nullable = false)
-    @Builder.Default
-    private Instant updateTimestamp = Instant.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

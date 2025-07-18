@@ -1,6 +1,8 @@
-package io.github.nivaldosilva.bookstore.dtos;
+package io.github.nivaldosilva.bookstore.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,14 +18,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderRequestDTO {
+@Schema(description = "Pedido de compra")
+public class OrderRequest {
 
+    @Schema(description = "ID único do pedido")
     private UUID id;
 
+    @Schema(description = "Email do cliente")
     @NotBlank(message = "Client email cannot be empty")
     @Email(message = "Invalid client email format")
-    private String clientEmail;
+    private String customerEmail;
 
+
+    @Schema(description = "Itens do pedido")
     @NotNull(message = "Order items cannot be null")
-    private List<OrderItemRequestDTO> items;
+    private List<OrderItemRequest> items;
 }

@@ -2,10 +2,12 @@ package io.github.nivaldosilva.bookstore.service;
 
 import io.github.nivaldosilva.bookstore.domain.entities.Author;
 import io.github.nivaldosilva.bookstore.domain.repositories.AuthorRepository;
-import io.github.nivaldosilva.bookstore.dtos.AuthorDTO;
+import io.github.nivaldosilva.bookstore.dtos.request.CreateAuthorRequest;
+import io.github.nivaldosilva.bookstore.dtos.response.AuthorDetailsResponse;
+import io.github.nivaldosilva.bookstore.dtos.response.AuthorSummary;
 import io.github.nivaldosilva.bookstore.exceptions.AuthorNameAlreadyExistsException;
 import io.github.nivaldosilva.bookstore.exceptions.AuthorNotFoundException;
-import io.github.nivaldosilva.bookstore.mappers.AuthorMapper;
+import io.github.nivaldosilva.bookstore.utils.mappers.AuthorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,52 +22,51 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
 
     @Transactional
-    public AuthorDTO createAuthor(AuthorDTO authorDTO) {
-        if (authorRepository.existsByName(authorDTO.getName())) {
+    public AuthorDetailsResponse createAuthor(CreateAuthorRequest request) {
+        if (authorRepository.existsByName(request.getName())) {
             throw new AuthorNameAlreadyExistsException(
-                    "Autor com o nome '" + authorDTO.getName() + "' já existe.");
+                    "Autor com o nome '" + request.getName() + "' já existe.");
         }
 
-        Author author = AuthorMapper.toEntity(authorDTO);
+        Author author = AuthorMapper.toEntity(request);
         Author savedAuthor = authorRepository.save(author);
 
-        return AuthorMapper.toDTO(savedAuthor); 
+        return AuthorMapper.toDetailsResponseDTO(savedAuthor);
     }
 
     @Transactional(readOnly = true)
-    public AuthorDTO findAuthorById(UUID id) {
+    public AuthorDetailsResponse findAuthorById(UUID id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("Autor não encontrado com ID: " + id));
 
-        return AuthorMapper.toDTO(author); 
+        return AuthorMapper.toDetailsResponseDTO(author);
     }
 
     @Transactional(readOnly = true)
-    public List<AuthorDTO> findAllAuthors() {
+    public List<AuthorSummary> findAllAuthors() {
         return authorRepository.findAll().stream()
-                .map(AuthorMapper::toDTO) 
+                .map(AuthorMapper::toSummaryDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public AuthorDTO updateAuthor(UUID id, AuthorDTO authorDTO) {
+    public AuthorDetailsResponse updateAuthor(UUID id, CreateAuthorRequest request) {
         Author existingAuthor = authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException("Autor não encontrado com ID: " + id));
 
-        if (!existingAuthor.getName().equals(authorDTO.getName())
-                && authorRepository.existsByName(authorDTO.getName())) {
+        if (!existingAuthor.getName().equals(request.getName())
+                && authorRepository.existsByName(request.getName())) {
             throw new AuthorNameAlreadyExistsException(
-                   "Autor com o nome '" + authorDTO.getName() + "' já existe.");
+                    "Autor com o nome '" + request.getName() + "' já existe.");
         }
-        existingAuthor.setName(authorDTO.getName());
-        existingAuthor.setNationality(authorDTO.getNationality());
-        existingAuthor.setBirthDate(authorDTO.getBirthDate());
-        existingAuthor.setBiography(authorDTO.getBiography());
+        existingAuthor.setName(request.getName());
+        existingAuthor.setNationality(request.getNationality());
+        existingAuthor.setBirthDate(request.getBirthDate());
+        existingAuthor.setBiography(request.getBiography());
 
         Author updatedAuthor = authorRepository.save(existingAuthor);
-        return AuthorMapper.toDTO(updatedAuthor); 
+        return AuthorMapper.toDetailsResponseDTO(updatedAuthor);
     }
-
 
     @Transactional
     public void deleteAuthor(UUID id) {
@@ -74,5 +75,4 @@ public class AuthorService {
         }
         authorRepository.deleteById(id);
     }
-
 }

@@ -1,14 +1,12 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.ISBN;
 import io.github.nivaldosilva.bookstore.domain.enums.Genre;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,79 +20,60 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "books")
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "author", "orderItems" })
-@ToString(exclude = { "author", "orderItems" })
-public class Book implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(nullable = false, unique = true, length = 17)
-    @ISBN
     private String isbn;
 
     @Column(nullable = false, length = 200)
-    @NotBlank
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String synopsis;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @Column(nullable = false)
     private Genre genre;
 
     @Column(name = "publication_date", nullable = false)
-    @NotNull
-    @Past
     private LocalDate publicationDate;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    @NotNull
     private BigDecimal price;
 
     @Column(name = "stock_quantity", nullable = false)
-    @NotNull
-    @PositiveOrZero
     private Integer stockQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_fk", nullable = false)
-    @NotNull
     private Author author;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
     @CreationTimestamp
-    @Column(name = "creation_timestamp", nullable = false, updatable = false)
-    @Builder.Default
-    private Instant creationTimestamp = Instant.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_timestamp", nullable = false)
-    @Builder.Default
-    private Instant updateTimestamp = Instant.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

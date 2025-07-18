@@ -1,21 +1,21 @@
 package io.github.nivaldosilva.bookstore.service;
 
 import io.github.nivaldosilva.bookstore.domain.entities.Book;
-import io.github.nivaldosilva.bookstore.domain.entities.Client;
+import io.github.nivaldosilva.bookstore.domain.entities.Customer;
 import io.github.nivaldosilva.bookstore.domain.entities.Order;
 import io.github.nivaldosilva.bookstore.domain.entities.OrderItem;
 import io.github.nivaldosilva.bookstore.domain.enums.OrderStatus;
 import io.github.nivaldosilva.bookstore.domain.repositories.BookRepository;
 import io.github.nivaldosilva.bookstore.domain.repositories.OrderRepository;
-import io.github.nivaldosilva.bookstore.domain.repositories.ClientRepository;
-import io.github.nivaldosilva.bookstore.dtos.OrderItemRequestDTO;
-import io.github.nivaldosilva.bookstore.dtos.OrderRequestDTO;
-import io.github.nivaldosilva.bookstore.dtos.OrderResponseDTO;
+import io.github.nivaldosilva.bookstore.dtos.request.OrderItemRequest;
+import io.github.nivaldosilva.bookstore.dtos.request.OrderRequest;
+import io.github.nivaldosilva.bookstore.dtos.response.OrderResponse;
 import io.github.nivaldosilva.bookstore.exceptions.BookNotFoundException;
-import io.github.nivaldosilva.bookstore.exceptions.ClientNotFoundException;
+import io.github.nivaldosilva.bookstore.exceptions.CustomerNotFoundException;
 import io.github.nivaldosilva.bookstore.exceptions.InsufficientStockException;
 import io.github.nivaldosilva.bookstore.exceptions.OrderNotFoundException;
-import io.github.nivaldosilva.bookstore.mappers.OrderMapper;
+import io.github.nivaldosilva.bookstore.domain.repositories.CustomerRepository;
+import io.github.nivaldosilva.bookstore.utils.mappers.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,68 +30,69 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ClientRepository clientRepository;
+    private final CustomerRepository customerRepository;
     private final BookRepository bookRepository;
 
     @Transactional
-    public OrderResponseDTO createOrder(OrderRequestDTO orderRequestDTO) {
-        Client client = clientRepository.findByEmail(orderRequestDTO.getClientEmail())
+    public OrderResponse createOrder(OrderRequest orderRequest) {
+        // 1. Buscar o cliente
+        Customer customer = customerRepository.findByEmail(orderRequest.getCustomerEmail())
                 .orElseThrow(
-                        () -> new ClientNotFoundException(
-                                "Cliente não encontrado com email: " + orderRequestDTO.getClientEmail()));
+                        () -> new CustomerNotFoundException(
+                                "Cliente não encontrado com email: " + orderRequest.getCustomerEmail()));
+
+        Order order = Order.builder()
+                .customer(customer)
+                .status(OrderStatus.PENDING)
+                .build();
 
         BigDecimal totalOrderAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
 
-        if (orderRequestDTO.getItems() == null || orderRequestDTO.getItems().isEmpty()) {
+        if (orderRequest.getItems() == null || orderRequest.getItems().isEmpty()) {
             throw new IllegalArgumentException("O pedido deve conter pelo menos um item.");
         }
 
-        for (OrderItemRequestDTO itemRequestDTO : orderRequestDTO.getItems()) {
-            Book book = bookRepository.findByIsbn(itemRequestDTO.getBookIsbn())
+       
+        for (OrderItemRequest itemRequest : orderRequest.getItems()) {
+            Book book = bookRepository.findByIsbn(itemRequest.getBookIsbn())
                     .orElseThrow(() -> new BookNotFoundException(
-                            "Livro não encontrado com ISBN: " + itemRequestDTO.getBookIsbn()));
+                            "Livro não encontrado com ISBN: " + itemRequest.getBookIsbn()));
 
-            if (book.getStockQuantity() < itemRequestDTO.getQuantity()) {
+            if (book.getStockQuantity() < itemRequest.getQuantity()) {
                 throw new InsufficientStockException("Estoque insuficiente para o livro '" + book.getTitle()
                         + "'. Disponível: " + book.getStockQuantity() + ", Solicitado: "
-                        + itemRequestDTO.getQuantity());
+                        + itemRequest.getQuantity());
             }
-            BigDecimal unitPrice = book.getPrice();
-            BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(itemRequestDTO.getQuantity()));
 
-            // Atualiza o estoque do livro
-            book.setStockQuantity(book.getStockQuantity() - itemRequestDTO.getQuantity());
+            BigDecimal unitPrice = book.getPrice();
+            BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
+
+            book.setStockQuantity(book.getStockQuantity() - itemRequest.getQuantity());
             bookRepository.save(book);
 
             OrderItem orderItem = OrderItem.builder()
                     .book(book)
-                    .quantity(itemRequestDTO.getQuantity())
+                    .quantity(itemRequest.getQuantity())
                     .unitPrice(unitPrice)
                     .totalPrice(totalPrice)
+                    .order(order)
                     .build();
             orderItems.add(orderItem);
 
             totalOrderAmount = totalOrderAmount.add(totalPrice);
         }
 
-        Order order = Order.builder()
-                .client(client)
-                .totalAmount(totalOrderAmount)
-                .status(OrderStatus.PENDING)
-                .build();
+        order.setTotalAmount(totalOrderAmount);
+        order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);
 
-        for (OrderItem item : orderItems) {
-            item.setOrder(savedOrder);
-        }
-        savedOrder.setItems(orderItems); 
         return OrderMapper.toResponseDTO(savedOrder);
     }
 
     @Transactional(readOnly = true)
-    public OrderResponseDTO findOrderById(UUID id) {
+    public OrderResponse findOrderById(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Pedido não encontrado com ID: " + id));
 
@@ -99,14 +100,14 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponseDTO> findAllOrders() {
+    public List<OrderResponse> findAllOrders() {
         return orderRepository.findAll().stream()
                 .map(OrderMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderResponseDTO updateOrderStatus(UUID id, OrderStatus newStatus) {
+    public OrderResponse updateOrderStatus(UUID id, OrderStatus newStatus) {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Pedido não encontrado com ID: " + id));
 

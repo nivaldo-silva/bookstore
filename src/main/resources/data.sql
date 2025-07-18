@@ -1,0 +1,25 @@
+INSERT INTO authors (id, name, nationality, birth_date, biography) VALUES 
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'), 'J.K. Rowling', 'British', '1965-07-31', 'British author best known for the Harry Potter series'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12'), 'George Orwell', 'British', '1903-06-25', 'English novelist, essayist, and critic famous for Animal Farm and 1984'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13'), 'Machado de Assis', 'Brazilian', '1839-06-21', 'Brazilian novelist, poet, playwright and short story writer'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14'), 'Clarice Lispector', 'Brazilian', '1920-12-10', 'Brazilian novelist and short story writer acclaimed internationally'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15'), 'Gabriel García Márquez', 'Colombian', '1927-03-06', 'Colombian novelist and Nobel Prize winner known for magical realism'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16'), 'Agatha Christie', 'British', '1890-09-15', 'British writer known for detective novels featuring Hercule Poirot'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a17'), 'Stephen King', 'American', '1947-09-21', 'American author of horror, supernatural fiction, and fantasy novels'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a18'), 'Margaret Atwood', 'Canadian', '1939-11-18', 'Canadian poet, novelist, and essayist known for dystopian fiction'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a19'), 'Haruki Murakami', 'Japanese', '1949-01-12', 'Japanese writer known for surreal and melancholic fiction'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a20'), 'Toni Morrison', 'American', '1931-02-18', 'American novelist and Nobel Prize winner exploring African-American experience'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a21'), 'Chimamanda Ngozi Adichie', 'Nigerian', '1977-09-15', 'Nigerian writer whose works include novels, short stories, and nonfiction'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22'), 'Neil Gaiman', 'British', '1960-11-10', 'British author of short fiction, novels, comic books, graphic novels, nonfiction, audio theatre, and films'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a23'), 'Brandon Sanderson', 'American', '1975-12-19', 'American fantasy and science fiction writer best known for the Cosmere fictional universe'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a24'), 'Gillian Flynn', 'American', '1971-02-24', 'American author and former television critic known for Sharp Objects, Dark Places, and Gone Girl'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a25'), 'Kazuo Ishiguro', 'British', '1954-11-08', 'British novelist, screenwriter, and short-story writer awarded the Nobel Prize in Literature in 2017'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a26'), 'Sally Rooney', 'Irish', '1991-02-20', 'Irish novelist and screenwriter known for Conversations with Friends and Normal People'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a27'), 'Ta-Nehisi Coates', 'American', '1975-09-30', 'American author, journalist, and comic book writer, national correspondent for The Atlantic'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a28'), 'Celeste Ng', 'American', '1980-07-30', 'American author known for Everything I Never Told You and Little Fires Everywhere'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a29'), 'Yaa Gyasi', 'Ghanaian-American', '1989-08-01', 'Ghanaian-American novelist whose debut novel Homegoing won the National Book Critics Circle Award'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a30'), 'Rupi Kaur', 'Canadian', '1992-10-04', 'Indian-born Canadian poet, illustrator, and author known for her visual poetry'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a31'), 'J.R.R. Tolkien', 'British', '1892-01-03', 'British author and philologist best known for The Hobbit and The Lord of the Rings'),
+(UUID_TO_BIN('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a32'), 'George R.R. Martin', 'American', '1948-09-20', 'American novelist and screenwriter best known for A Song of Ice and Fire series');
+
+

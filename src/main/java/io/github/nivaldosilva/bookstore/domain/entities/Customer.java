@@ -1,7 +1,6 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
-import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,19 +21,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "customers")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "orders" })
-@ToString(exclude = { "orders" })
-public class Client implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -53,17 +48,15 @@ public class Client implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @CreationTimestamp
-    @Column(name = "creation_timestamp", nullable = false, updatable = false)
-    @Builder.Default
-    private Instant creationTimestamp = Instant.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_timestamp", nullable = false)
-    @Builder.Default
-    private Instant updateTimestamp = Instant.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 }

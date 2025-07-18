@@ -1,8 +1,7 @@
 package io.github.nivaldosilva.bookstore.domain.entities;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,14 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "order_items")
@@ -30,11 +26,8 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "order", "book" })
-@ToString(exclude = { "order", "book" })
-public class OrderItem implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -42,36 +35,26 @@ public class OrderItem implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_fk", nullable = false)
-    @NotNull
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_fk", nullable = false)
-    @NotNull
     private Book book;
 
     @Column(nullable = false)
-    @NotNull
-    @Positive
     private Integer quantity;
 
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
-    @NotNull
-    @Positive
     private BigDecimal unitPrice;
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    @NotNull
-    @Positive
     private BigDecimal totalPrice;
 
     @CreationTimestamp
-    @Column(name = "creation_timestamp", nullable = false, updatable = false)
-    @Builder.Default
-    private Instant creationTimestamp = Instant.now();
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "update_timestamp", nullable = false)
-    @Builder.Default
-    private Instant updateTimestamp = Instant.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
